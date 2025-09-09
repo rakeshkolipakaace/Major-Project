@@ -84,6 +84,18 @@ export default function Home() {
             Embark on magical adventures with AI-powered stories. Read, listen, and improve your skills while exploring the universe!
           </p>
           
+          {/* Featured Storybook */}
+          <div className="mt-8">
+            <Button 
+              onClick={() => setLocation("/storybook")}
+              className="px-8 py-4 bg-secondary text-secondary-foreground font-gaming text-lg hover:bg-secondary/90 rounded-xl"
+              data-testid="button-featured-story"
+            >
+              <i className="fas fa-book-open mr-3" />
+              Read Complete Story: The Purple Planet Mystery
+            </Button>
+          </div>
+          
           {/* Daily Progress */}
           <div className="bg-card/30 backdrop-blur-md rounded-2xl p-6 max-w-md mx-auto border border-border">
             <h3 className="text-lg font-gaming text-secondary mb-4">Today's Progress</h3>
