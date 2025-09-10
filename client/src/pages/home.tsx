@@ -6,6 +6,7 @@ import { AnimatedBackground } from "@/components/animated-background";
 import { Navigation } from "@/components/navigation";
 import { StoryCard } from "@/components/story-card";
 import { AchievementBadge } from "@/components/achievement-badge";
+import { CustomStoryCreator } from "@/components/custom-story-creator";
 import { useGameData } from "@/hooks/use-game-data";
 import { StoryThemeConfig } from "@/types/game";
 
@@ -55,6 +56,13 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const { gameData, updateStreak } = useGameData();
 
+  const handleCustomStoryCreated = (customStory: any) => {
+    // Store the custom story in localStorage for access
+    localStorage.setItem('currentCustomStory', JSON.stringify(customStory));
+    // Navigate to the custom story reader
+    setLocation(`/story/custom/${customStory.id}`);
+  };
+
   const handleThemeSelect = (themeId: string) => {
     updateStreak();
     setLocation(`/story/${themeId}/0`);
@@ -86,21 +94,28 @@ export default function Home() {
           
           {/* Featured Stories */}
           <div className="mt-8 space-y-4">
-            <Button 
-              onClick={() => setLocation("/story-selection")}
-              className="px-8 py-4 bg-primary text-primary-foreground font-gaming text-lg hover:bg-primary/90 rounded-xl mr-4"
-              data-testid="button-comedy-stories"
-            >
-              🎭 Fun Comedy Stories
-            </Button>
-            <Button 
-              onClick={() => setLocation("/storybook")}
-              className="px-8 py-4 bg-secondary text-secondary-foreground font-gaming text-lg hover:bg-secondary/90 rounded-xl"
-              data-testid="button-featured-story"
-            >
-              <i className="fas fa-book-open mr-3" />
-              Space Adventure Story
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                onClick={() => setLocation("/story-selection")}
+                className="px-8 py-4 bg-primary text-primary-foreground font-gaming text-lg hover:bg-primary/90 rounded-xl"
+                data-testid="button-comedy-stories"
+              >
+                🎭 Fun Comedy Stories
+              </Button>
+              <Button 
+                onClick={() => setLocation("/storybook")}
+                className="px-8 py-4 bg-secondary text-secondary-foreground font-gaming text-lg hover:bg-secondary/90 rounded-xl"
+                data-testid="button-featured-story"
+              >
+                <i className="fas fa-book-open mr-3" />
+                Space Adventure Story
+              </Button>
+            </div>
+            
+            {/* Custom Story Creator */}
+            <div className="flex justify-center pt-4">
+              <CustomStoryCreator onStoryCreated={handleCustomStoryCreated} />
+            </div>
           </div>
           
           {/* Daily Progress */}

@@ -140,6 +140,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
   }
 
+  // Generate custom story based on user prompt
+  app.post("/api/generate-custom-story", async (req, res) => {
+    try {
+      const { title, theme, customPrompt, difficulty, mainCharacter, setting } = req.body;
+      
+      if (!title || !customPrompt) {
+        return res.status(400).json({ error: 'Title and custom prompt are required' });
+      }
+
+      // Create a custom story structure based on user input
+      const customStory = generateCustomStoryFromPrompt({
+        title,
+        theme,
+        customPrompt,
+        difficulty: difficulty || 'easy',
+        mainCharacter,
+        setting
+      });
+
+      res.json(customStory);
+    } catch (error) {
+      console.error('Error generating custom story:', error);
+      res.status(500).json({ error: 'Failed to generate custom story' });
+    }
+  });
+
+  function generateCustomStoryFromPrompt(params: {
+    title: string;
+    theme: string;
+    customPrompt: string;
+    difficulty: string;
+    mainCharacter?: string;
+    setting?: string;
+  }) {
+    const { title, theme, customPrompt, difficulty, mainCharacter, setting } = params;
+    
+    // Create story chapters based on custom prompt
+    const chapters = createChaptersFromPrompt(customPrompt, mainCharacter, setting, theme);
+    
+    const customStory = {
+      id: `custom_${Date.now()}`,
+      title,
+      theme: theme === 'custom' ? 'adventure' : theme,
+      description: `A custom story: ${customPrompt.substring(0, 100)}...`,
+      difficulty,
+      estimatedTime: chapters.length * 4, // 4 minutes per chapter for custom stories
+      isCustomStory: true,
+      customPrompt,
+      chapters: chapters.map((chapter, index) => ({
+        id: `custom_${Date.now()}_${index}`,
+        title: chapter.title,
+        content: chapter.content,
+        interactiveSection: chapter.interactiveSection,
+        imagePrompt: chapter.imagePrompt
+      }))
+    };
+
+    return customStory;
+  }
+
+  function createChaptersFromPrompt(customPrompt: string, mainCharacter?: string, setting?: string, theme?: string): any[] {
+    // Split the custom prompt into story beats
+    const sentences = customPrompt.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const numChapters = Math.min(Math.max(3, Math.ceil(sentences.length / 2)), 6); // 3-6 chapters
+    
+    const character = mainCharacter || "our brave hero";
+    const location = setting || "a wonderful place";
+    
+    const chapters = [];
+    
+    // Chapter 1: Introduction
+    chapters.push({
+      title: "The Beginning",
+      content: `${character} found themselves in ${location}. ${sentences[0] || customPrompt.substring(0, 150)}. This was the start of an amazing adventure that would change everything!`,
+      interactiveSection: `"This is so exciting!" ${character} thought. "I wonder what will happen next on this incredible journey!"`,
+      imagePrompt: `${character} in ${location}, beginning of adventure, ${theme} theme, cartoon style, child-friendly, colorful`
+    });
+
+    // Middle chapters: Develop the story
+    const middleContent = sentences.slice(1, -1);
+    const contentPerChapter = Math.ceil(middleContent.length / (numChapters - 2));
+    
+    for (let i = 1; i < numChapters - 1; i++) {
+      const startIdx = (i - 1) * contentPerChapter;
+      const endIdx = Math.min(startIdx + contentPerChapter, middleContent.length);
+      const chapterContent = middleContent.slice(startIdx, endIdx).join('. ');
+      
+      chapters.push({
+        title: `Chapter ${i + 1}`,
+        content: `${chapterContent || 'The adventure continued in unexpected ways.'}. ${character} discovered new things and faced exciting challenges along the way.`,
+        interactiveSection: `"Wow, this is amazing!" ${character} exclaimed. "I never imagined something like this could happen!"`,
+        imagePrompt: `${character} ${chapterContent.substring(0, 100)}, ${theme} adventure, cartoon illustration, vibrant colors, child-friendly`
+      });
+    }
+
+    // Final chapter: Resolution
+    const lastSentence = sentences[sentences.length - 1] || "everything worked out perfectly";
+    chapters.push({
+      title: "The Happy Ending",
+      content: `${lastSentence}. ${character} had learned so much and had the most wonderful adventure. They knew they would never forget this amazing experience and looked forward to more adventures in the future!`,
+      interactiveSection: `"What an incredible adventure!" ${character} smiled. "I can't wait to share this story with everyone and maybe have another adventure soon!"`,
+      imagePrompt: `${character} happy ending, celebration, ${location}, ${theme} theme, joyful scene, cartoon style, colorful and cheerful`
+    });
+
+    return chapters;
+  }
+
   // Get achievement definitions
   app.get("/api/achievements", (req, res) => {
     const achievements = [
