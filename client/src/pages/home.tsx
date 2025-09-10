@@ -61,7 +61,14 @@ export default function Home() {
     return savedScore ? parseInt(savedScore) : 0;
   };
 
+  // Get reading achievements count
+  const getReadingAchievements = () => {
+    const savedScores = localStorage.getItem('allReadingScores');
+    return savedScores ? JSON.parse(savedScores).length : 0;
+  };
+
   const readingScore = getReadingScore();
+  const totalReadings = getReadingAchievements();
 
 
   const handleThemeSelect = (themeId: string) => {
@@ -121,12 +128,23 @@ export default function Home() {
             {/* Reading Score Display */}
             <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-4 mb-4 border border-purple-200">
               <div className="text-center">
-                <div className="text-3xl font-gaming text-purple-600 mb-1">
-                  {readingScore}
+                <div className="flex justify-center items-center space-x-4 mb-2">
+                  <div>
+                    <div className="text-3xl font-gaming text-purple-600 mb-1">
+                      {readingScore}
+                    </div>
+                    <div className="text-sm text-purple-600 font-medium">Total Score</div>
+                  </div>
+                  <div className="w-px h-12 bg-purple-300"></div>
+                  <div>
+                    <div className="text-3xl font-gaming text-pink-600 mb-1">
+                      {totalReadings}
+                    </div>
+                    <div className="text-sm text-pink-600 font-medium">Pages Read</div>
+                  </div>
                 </div>
-                <div className="text-sm text-purple-600 font-medium">Reading Score</div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  Complete stories and improve pronunciation to increase your score!
+                  Read complete paragraphs and earn points! Score increases from 1 to infinity! 🚀
                 </div>
               </div>
             </div>

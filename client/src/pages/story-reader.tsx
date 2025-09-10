@@ -460,16 +460,27 @@ export default function StoryReader() {
             <div className="bg-white/60 backdrop-blur-md rounded-3xl p-6 shadow-lg">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Reading Progress</h3>
               
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
-                  <div className="text-2xl font-bold text-indigo-600 mb-1">
-                    {pronunciationScore ? Math.round(pronunciationScore) : '--'}%
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {/* Current Page Score */}
+                <div className={`text-center p-4 rounded-2xl border-2 ${getCurrentPageScore() ? getScoreColor(getCurrentPageScore()!).bg + ' ' + getScoreColor(getCurrentPageScore()!).border : 'bg-gray-50 border-gray-200'}`}>
+                  <div className={`text-2xl font-bold mb-1 ${getCurrentPageScore() ? getScoreColor(getCurrentPageScore()!).text : 'text-gray-400'}`}>
+                    {getCurrentPageScore() || '--'}%
                   </div>
-                  <div className="text-xs text-gray-600 font-medium">Pronunciation</div>
+                  <div className="text-xs text-gray-600 font-medium">This Page Score</div>
                 </div>
                 
-                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl">
+                {/* Total Reading Score */}
+                <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200">
                   <div className="text-2xl font-bold text-purple-600 mb-1">
+                    {getTotalReadingScore()}
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">Total Score</div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl">
+                  <div className="text-2xl font-bold text-indigo-600 mb-1">
                     {currentChapter + 1}/{story.chapters.length}
                   </div>
                   <div className="text-xs text-gray-600 font-medium">Chapters</div>

@@ -141,19 +141,27 @@ export function StoryCustomizer({ currentStory, onStoryUpdated }: StoryCustomize
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <Label htmlFor="customPrompt">How would you like to change the story?</Label>
+            <Label htmlFor="customPrompt" className="text-base font-semibold">How would you like to change the story?</Label>
             <Textarea
               id="customPrompt"
               placeholder="Describe how you want to modify this story. For example: 'Add a friendly dragon who helps the main character', 'Make the adventure happen in a magical underwater world', 'Include a special treasure hunt with puzzles to solve'..."
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              className="min-h-[120px] mt-2"
+              className="min-h-[140px] mt-3 text-lg"
             />
-            <p className="text-sm text-muted-foreground mt-2">
-              💡 Your changes will be applied to this story and new images will be generated!
-            </p>
+            <div className="mt-3 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+              <p className="text-sm text-purple-700 font-medium mb-2">
+                ✨ Story Customization Features:
+              </p>
+              <ul className="text-sm text-purple-600 space-y-1">
+                <li>• Change characters, settings, or plot elements</li>
+                <li>• Add new adventures or magical elements</li>
+                <li>• Generate new AI images for your custom story</li>
+                <li>• Make the story uniquely yours!</li>
+              </ul>
+            </div>
           </div>
 
           <div className="flex space-x-3">
