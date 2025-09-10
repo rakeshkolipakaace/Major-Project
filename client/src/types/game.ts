@@ -43,6 +43,7 @@ export interface Story {
   difficulty: 'easy' | 'medium' | 'hard';
   estimatedTime: number;
   isCustomStory?: boolean;
+  isCustomized?: boolean;
   customPrompt?: string;
 }
 
