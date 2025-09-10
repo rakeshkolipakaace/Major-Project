@@ -91,7 +91,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const formData = new FormData();
       formData.append('prompt', prompt);
-      formData.append('output_format', 'jpeg');
       
       const response = await fetch('https://clipdrop-api.co/text-to-image/v1', {
         method: 'POST',

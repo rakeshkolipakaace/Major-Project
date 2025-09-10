@@ -32,7 +32,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Chef Max put on his big white hat and stepped into his colorful kitchen. "Today I will make the most delicious soup!" he announced proudly. But as soon as he said this, something very strange happened...',
         voiceText: 'Chef Max put on his big white hat and stepped into his colorful kitchen. Today I will make the most delicious soup, he announced proudly.',
         imagePrompt: 'A happy chef with a big white hat in a bright colorful kitchen, cartoon style, child-friendly',
-        practiceText: 'Today I will make the most delicious soup!'
+        practiceText: 'Chef Max put on his big white hat and stepped into his colorful kitchen. "Today I will make the most delicious soup!" he announced proudly. But as soon as he said this, something very strange happened...'
       },
       {
         id: 'page-2',
@@ -40,7 +40,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'The carrots in his basket started wiggling! Then they jumped out and began dancing around the kitchen floor. "Wait, wait!" called Chef Max. "I need you for my soup!" But the carrots just giggled and kept dancing.',
         voiceText: 'The carrots in his basket started wiggling! Then they jumped out and began dancing around the kitchen floor.',
         imagePrompt: 'Orange carrots with cute faces dancing around a kitchen floor, cartoon style, very cute and funny',
-        practiceText: 'Wait, wait! I need you for my soup!'
+        practiceText: 'The carrots in his basket started wiggling! Then they jumped out and began dancing around the kitchen floor. "Wait, wait!" called Chef Max. "I need you for my soup!" But the carrots just giggled and kept dancing.'
       },
       {
         id: 'page-3',
@@ -48,7 +48,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Next, the onions started singing a silly song! "♪ We don\'t want to make you cry, we just want to reach the sky! ♪" they sang as they rolled around. Chef Max scratched his head. This had never happened before!',
         voiceText: 'Next, the onions started singing a silly song! We don\'t want to make you cry, we just want to reach the sky, they sang as they rolled around.',
         imagePrompt: 'Round onions with happy faces singing and rolling around a kitchen, musical notes floating in air, cartoon style',
-        practiceText: 'We don\'t want to make you cry, we just want to reach the sky!'
+        practiceText: 'Next, the onions started singing a silly song! "♪ We don\'t want to make you cry, we just want to reach the sky! ♪" they sang as they rolled around. Chef Max scratched his head. This had never happened before!'
       },
       {
         id: 'page-4',
@@ -56,7 +56,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Then the potatoes started bouncing like basketballs! Boing, boing, boing! They bounced off the walls, off the ceiling, and even off Chef Max\'s hat! "This is getting very silly!" he laughed.',
         voiceText: 'Then the potatoes started bouncing like basketballs! Boing, boing, boing! They bounced off the walls, off the ceiling, and even off Chef Max\'s hat!',
         imagePrompt: 'Brown potatoes bouncing like basketballs in a kitchen, bouncing off walls and ceiling, cartoon style, very fun',
-        practiceText: 'This is getting very silly!'
+        practiceText: 'Then the potatoes started bouncing like basketballs! Boing, boing, boing! They bounced off the walls, off the ceiling, and even off Chef Max\'s hat! "This is getting very silly!" he laughed.'
       },
       {
         id: 'page-5',
@@ -64,7 +64,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Chef Max had a wonderful idea! "If you all want to play instead of becoming soup, how about we have a vegetable dance party instead?" All the vegetables cheered! "Hooray!" they shouted together.',
         voiceText: 'Chef Max had a wonderful idea! If you all want to play instead of becoming soup, how about we have a vegetable dance party instead?',
         imagePrompt: 'Chef Max smiling with his arms spread wide, surrounded by happy dancing vegetables in a kitchen, party atmosphere',
-        practiceText: 'How about we have a vegetable dance party instead?'
+        practiceText: 'Chef Max had a wonderful idea! "If you all want to play instead of becoming soup, how about we have a vegetable dance party instead?" All the vegetables cheered! "Hooray!" they shouted together.'
       },
       {
         id: 'page-6',
@@ -72,7 +72,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'So Chef Max turned on music and joined the vegetables in the silliest dance party ever! The carrots did the twist, the onions did the wiggle, and the potatoes did the bounce. They all had so much fun that they forgot all about making soup!',
         voiceText: 'So Chef Max turned on music and joined the vegetables in the silliest dance party ever! The carrots did the twist, the onions did the wiggle, and the potatoes did the bounce.',
         imagePrompt: 'A big dance party in kitchen with chef and all vegetables dancing together, music notes, very happy and colorful',
-        practiceText: 'They all had so much fun that they forgot all about making soup!'
+        practiceText: 'So Chef Max turned on music and joined the vegetables in the silliest dance party ever! The carrots did the twist, the onions did the wiggle, and the potatoes did the bounce. They all had so much fun that they forgot all about making soup!'
       }
     ]
   },
@@ -90,7 +90,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Tommy grabbed his cricket bat and ran to the playground. "Today I\'m going to hit the ball so far!" he said excitedly. His friends were already there, setting up the wickets and getting ready for a fun game.',
         voiceText: 'Tommy grabbed his cricket bat and ran to the playground. Today I\'m going to hit the ball so far, he said excitedly.',
         imagePrompt: 'A happy boy with a cricket bat running to a playground with cricket wickets, sunny day, cartoon style',
-        practiceText: 'Today I\'m going to hit the ball so far!'
+        practiceText: 'Tommy grabbed his cricket bat and ran to the playground. "Today I\'m going to hit the ball so far!" he said excitedly. His friends were already there, setting up the wickets and getting ready for a fun game.'
       },
       {
         id: 'page-2',
@@ -98,7 +98,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Tommy swung his bat with all his might! But instead of hitting the ball, he hit his own hat! WHOOSH! His hat flew high into the air and landed right on top of the wickets. Everyone started giggling.',
         voiceText: 'Tommy swung his bat with all his might! But instead of hitting the ball, he hit his own hat! Whoosh! His hat flew high into the air.',
         imagePrompt: 'A cricket hat flying through the air above a cricket field, children giggling in background, cartoon style',
-        practiceText: 'Whoosh! His hat flew high into the air!'
+        practiceText: 'Tommy swung his bat with all his might! But instead of hitting the ball, he hit his own hat! WHOOSH! His hat flew high into the air and landed right on top of the wickets. Everyone started giggling.'
       },
       {
         id: 'page-3',
@@ -106,7 +106,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'When Tommy tried again, he missed the ball completely! The ball kept rolling and rolling. It rolled past the boundary, past the swings, and right into the sandbox where it got buried in the sand!',
         voiceText: 'When Tommy tried again, he missed the ball completely! The ball kept rolling and rolling. It rolled past the boundary, past the swings, and right into the sandbox.',
         imagePrompt: 'A cricket ball rolling across playground past swings into a sandbox, children chasing after it, cartoon style',
-        practiceText: 'The ball kept rolling and rolling!'
+        practiceText: 'When Tommy tried again, he missed the ball completely! The ball kept rolling and rolling. It rolled past the boundary, past the swings, and right into the sandbox where it got buried in the sand!'
       },
       {
         id: 'page-4',
@@ -114,7 +114,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Finally, Tommy hit the ball! But he was so excited that he ran the wrong way! Instead of running to the other wicket, he ran backwards! His teammates were laughing so hard they could barely stand up.',
         voiceText: 'Finally, Tommy hit the ball! But he was so excited that he ran the wrong way! Instead of running to the other wicket, he ran backwards!',
         imagePrompt: 'A boy running backwards on cricket field while other children laugh and point, very funny scene, cartoon style',
-        practiceText: 'He ran the wrong way!'
+        practiceText: 'Finally, Tommy hit the ball! But he was so excited that he ran the wrong way! Instead of running to the other wicket, he ran backwards! His teammates were laughing so hard they could barely stand up.'
       },
       {
         id: 'page-5',
@@ -122,7 +122,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'Suddenly, a friendly dog ran onto the field! The dog picked up the ball in its mouth and started running around in circles. "Come back!" everyone shouted, but the dog thought it was all a fun game of fetch!',
         voiceText: 'Suddenly, a friendly dog ran onto the field! The dog picked up the ball in its mouth and started running around in circles.',
         imagePrompt: 'A happy dog running in circles on cricket field holding cricket ball in mouth, children chasing the dog, cartoon style',
-        practiceText: 'Come back! Come back!'
+        practiceText: 'Suddenly, a friendly dog ran onto the field! The dog picked up the ball in its mouth and started running around in circles. "Come back!" everyone shouted, but the dog thought it was all a fun game of fetch!'
       },
       {
         id: 'page-6',
@@ -130,7 +130,7 @@ export const comedyStories: ComedyStory[] = [
         content: 'In the end, everyone was laughing so much that they decided this was the best cricket game ever! Tommy learned that sometimes the funniest games are the ones where everything goes wrong. They all agreed to play "silly cricket" every week!',
         voiceText: 'In the end, everyone was laughing so much that they decided this was the best cricket game ever! Tommy learned that sometimes the funniest games are the ones where everything goes wrong.',
         imagePrompt: 'All children sitting on cricket field laughing together with dog, everyone very happy, sunny playground, cartoon style',
-        practiceText: 'This was the best cricket game ever!'
+        practiceText: 'In the end, everyone was laughing so much that they decided this was the best cricket game ever! Tommy learned that sometimes the funniest games are the ones where everything goes wrong. They all agreed to play "silly cricket" every week!'
       }
     ]
   },

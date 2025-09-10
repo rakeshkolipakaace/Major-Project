@@ -12,6 +12,8 @@ export function useSpeechRecognition() {
   const [result, setResult] = useState<SpeechRecognitionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const recognitionRef = useRef<any>(null);
+  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSpeechTimeRef = useRef<number>(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,16 +39,41 @@ export function useSpeechRecognition() {
             isComplete = event.results[i].isFinal;
           }
 
+          // Reset silence timer when speech is detected
+          lastSpeechTimeRef.current = Date.now();
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+          }
+          
+          // Set a new timer for 5 seconds of silence
+          silenceTimerRef.current = setTimeout(() => {
+            if (recognitionRef.current && isListening) {
+              recognitionRef.current.stop();
+            }
+          }, 5000);
+
           setResult({ transcript: transcript.trim(), confidence, isComplete });
         };
 
         recognition.onstart = () => {
           setIsListening(true);
           setError(null);
+          lastSpeechTimeRef.current = Date.now();
+          
+          // Set initial silence timer
+          silenceTimerRef.current = setTimeout(() => {
+            if (recognitionRef.current && isListening) {
+              recognitionRef.current.stop();
+            }
+          }, 5000);
         };
 
         recognition.onend = () => {
           setIsListening(false);
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+          }
         };
 
         recognition.onerror = (event: any) => {
@@ -68,6 +95,10 @@ export function useSpeechRecognition() {
   const stopListening = () => {
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
+    }
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
     }
   };
 
