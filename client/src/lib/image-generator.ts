@@ -5,39 +5,40 @@ interface ImageGenerationOptions {
 }
 
 export class ImageGenerator {
-  private static baseUrl = 'https://clipdrop-api.co/text-to-image/v1';
+  private static baseUrl = '/api/generate-image';
 
   static async generateImage(options: ImageGenerationOptions): Promise<string> {
-    const apiKey = import.meta.env.VITE_CLIPDROP_API_KEY || process.env.CLIPDROP_API_KEY;
-    
-    if (!apiKey) {
-      console.warn('Clipdrop API key not found, using placeholder image');
-      return this.getPlaceholderImage(options.prompt);
-    }
-
     try {
-      const formData = new FormData();
+      console.log('Generating image with prompt:', options.prompt);
       
       // Create a child-friendly prompt with cartoon style
       const childFriendlyPrompt = `${options.prompt}, cartoon style, colorful, child-friendly, cute, happy, safe for children, animated style, bright colors, no scary elements`;
       
-      formData.append('prompt', childFriendlyPrompt);
-      formData.append('output_format', 'jpeg');
-      
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
-          'x-api-key': apiKey,
+          'Content-Type': 'application/json',
         },
-        body: formData,
+        body: JSON.stringify({
+          prompt: childFriendlyPrompt,
+          style: options.style || 'cartoon'
+        }),
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API request failed:', response.status, errorText);
         throw new Error(`API request failed: ${response.status}`);
       }
 
-      const blob = await response.blob();
-      return URL.createObjectURL(blob);
+      const result = await response.json();
+      console.log('Image generated successfully:', result.imageUrl ? 'URL received' : 'No URL');
+      
+      if (result.imageUrl) {
+        return result.imageUrl;
+      } else {
+        throw new Error('No image URL in response');
+      }
     } catch (error) {
       console.error('Image generation failed:', error);
       return this.getPlaceholderImage(options.prompt);

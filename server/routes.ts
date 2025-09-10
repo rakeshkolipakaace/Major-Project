@@ -70,6 +70,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Generate image using Clipdrop API
+  app.post("/api/generate-image", async (req, res) => {
+    try {
+      const { prompt, style } = req.body;
+      
+      if (!prompt) {
+        return res.status(400).json({ error: 'Prompt is required' });
+      }
+
+      const apiKey = process.env.CLIPDROP_API_KEY;
+      
+      if (!apiKey) {
+        console.warn('Clipdrop API key not found, using placeholder image');
+        return res.json({ 
+          imageUrl: getPlaceholderImageUrl(prompt),
+          isPlaceholder: true 
+        });
+      }
+
+      const formData = new FormData();
+      formData.append('prompt', prompt);
+      formData.append('output_format', 'jpeg');
+      
+      const response = await fetch('https://clipdrop-api.co/text-to-image/v1', {
+        method: 'POST',
+        headers: {
+          'x-api-key': apiKey,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error('Clipdrop API error:', response.status, await response.text());
+        return res.json({ 
+          imageUrl: getPlaceholderImageUrl(prompt),
+          isPlaceholder: true 
+        });
+      }
+
+      const imageBuffer = await response.arrayBuffer();
+      const base64Image = Buffer.from(imageBuffer).toString('base64');
+      const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+      
+      res.json({ imageUrl, isPlaceholder: false });
+    } catch (error) {
+      console.error('Image generation error:', error);
+      res.json({ 
+        imageUrl: getPlaceholderImageUrl(req.body.prompt || ''),
+        isPlaceholder: true 
+      });
+    }
+  });
+
+  function getPlaceholderImageUrl(prompt: string): string {
+    // Return themed placeholder based on prompt content
+    if (prompt.includes('playground') || prompt.includes('cricket') || prompt.includes('playing')) {
+      return 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+    } else if (prompt.includes('kitchen') || prompt.includes('cooking') || prompt.includes('food')) {
+      return 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+    } else if (prompt.includes('park') || prompt.includes('outdoor') || prompt.includes('garden')) {
+      return 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+    } else if (prompt.includes('school') || prompt.includes('classroom') || prompt.includes('learning')) {
+      return 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+    } else if (prompt.includes('animal') || prompt.includes('pet') || prompt.includes('zoo')) {
+      return 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+    }
+    
+    // Default child-friendly placeholder
+    return 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+  }
+
   // Get achievement definitions
   app.get("/api/achievements", (req, res) => {
     const achievements = [
