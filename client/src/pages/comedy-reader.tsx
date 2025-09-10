@@ -112,7 +112,7 @@ export default function ComedyReader() {
     } catch (error) {
       console.error('Image generation failed:', error);
       // Use placeholder image
-      setCurrentImage(ImageGenerator.getPlaceholderImage?.(page.imagePrompt) || '');
+      setCurrentImage(ImageGenerator.getPlaceholderImage(page.imagePrompt));
     } finally {
       setIsLoadingImage(false);
     }

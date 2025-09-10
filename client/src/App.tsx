@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import StoryReader from "@/pages/story-reader";
 import Storybook from "@/pages/storybook";
+import StorySelection from "@/pages/story-selection";
+import ComedyReader from "@/pages/comedy-reader";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -14,6 +16,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/story/:theme/:storyId" component={StoryReader} />
       <Route path="/storybook" component={Storybook} />
+      <Route path="/story-selection" component={StorySelection} />
+      <Route path="/comedy-reader/:storyId" component={ComedyReader} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -44,7 +44,7 @@ export class ImageGenerator {
     }
   }
 
-  private static getPlaceholderImage(prompt: string): string {
+  static getPlaceholderImage(prompt: string): string {
     // Return themed placeholder based on prompt content
     if (prompt.includes('playground') || prompt.includes('cricket') || prompt.includes('playing')) {
       return 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
