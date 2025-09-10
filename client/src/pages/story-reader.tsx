@@ -19,6 +19,8 @@ export default function StoryReader() {
   const [isRecording, setIsRecording] = useState(false);
   const [pronunciationScore, setPronunciationScore] = useState<number | null>(null);
   const [sessionStars, setSessionStars] = useState(0);
+  const [pageReadingScores, setPageReadingScores] = useState<{[key: string]: number}>({});
+  const [allReadingScores, setAllReadingScores] = useState<{storyId: string, pageId: string, score: number, timestamp: number}[]>([]);
   
   const { gameData, addStars, setCurrentStory, updateGameData } = useGameData();
   const { 
@@ -64,6 +66,17 @@ export default function StoryReader() {
         });
       }
     }
+    
+    // Load existing reading scores from localStorage
+    const savedPageScores = localStorage.getItem('pageReadingScores');
+    if (savedPageScores) {
+      setPageReadingScores(JSON.parse(savedPageScores));
+    }
+    
+    const savedAllScores = localStorage.getItem('allReadingScores');
+    if (savedAllScores) {
+      setAllReadingScores(JSON.parse(savedAllScores));
+    }
   }, [theme, storyId, setCurrentStory]);
 
   const handleStartRecording = () => {
@@ -79,17 +92,50 @@ export default function StoryReader() {
 
   useEffect(() => {
     if (result && result.isComplete && story) {
-      const expectedText = story.chapters[currentChapter].interactiveSection || "";
+      // Use the complete paragraph content for pronunciation practice
+      const expectedText = story.chapters[currentChapter].content;
       const score = calculatePronunciationScore(expectedText, result.transcript);
       setPronunciationScore(score);
       setIsRecording(false);
+      
+      // Save reading score for this specific page
+      const pageKey = `${story.id}-chapter-${currentChapter}`;
+      const newPageScore = Math.round(score);
+      setPageReadingScores(prev => ({
+        ...prev,
+        [pageKey]: newPageScore
+      }));
+      
+      // Add to cumulative reading scores
+      const newScoreEntry = {
+        storyId: story.id,
+        pageId: pageKey,
+        score: newPageScore,
+        timestamp: Date.now()
+      };
+      setAllReadingScores(prev => [...prev, newScoreEntry]);
+      
+      // Update localStorage with reading scores
+      const currentCumulativeScore = parseInt(localStorage.getItem('readingScore') || '0');
+      const scoreIncrement = Math.floor(score / 10); // 1-10 points based on performance
+      localStorage.setItem('readingScore', (currentCumulativeScore + scoreIncrement).toString());
+      
+      // Save page scores to localStorage
+      localStorage.setItem('pageReadingScores', JSON.stringify({
+        ...pageReadingScores,
+        [pageKey]: newPageScore
+      }));
+      
+      // Save all reading scores to localStorage
+      const existingScores = JSON.parse(localStorage.getItem('allReadingScores') || '[]');
+      localStorage.setItem('allReadingScores', JSON.stringify([...existingScores, newScoreEntry]));
       
       // Award stars based on pronunciation score
       const starsEarned = score >= 90 ? 20 : score >= 80 ? 15 : score >= 70 ? 10 : 5;
       addStars(starsEarned);
       setSessionStars(prev => prev + starsEarned);
     }
-  }, [result, story, currentChapter, calculatePronunciationScore, addStars]);
+  }, [result, story, currentChapter, calculatePronunciationScore, addStars, pageReadingScores]);
 
   const handleStoryUpdated = (updatedStory: Story) => {
     setStory(updatedStory);
@@ -158,6 +204,24 @@ export default function StoryReader() {
 
   const handleSaveProgress = () => {
     updateGameData();
+  };
+
+  // Helper function to get color coding for reading scores
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' };
+    if (score >= 50) return { bg: 'bg-yellow-100', text: 'text-yellow-600', border: 'border-yellow-200' };
+    return { bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-200' };
+  };
+
+  // Get current page score
+  const getCurrentPageScore = () => {
+    const pageKey = `${story?.id}-chapter-${currentChapter}`;
+    return pageReadingScores[pageKey] || null;
+  };
+
+  // Get total cumulative reading score
+  const getTotalReadingScore = () => {
+    return parseInt(localStorage.getItem('readingScore') || '0');
   };
 
   if (!story) {
@@ -289,21 +353,29 @@ export default function StoryReader() {
                   {currentChapterData.content}
                 </p>
                 
-                {/* Interactive Reading Section */}
-                {currentChapterData.interactiveSection && (
-                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-6 space-y-4">
-                    <div className="flex items-center space-x-2 mb-3">
+                {/* Interactive Reading Section - Complete Paragraph */}
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
                       <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center">
                         <Mic className="w-4 h-4 text-white" />
                       </div>
                       <span className="text-indigo-700 font-bold text-lg">Practice Reading!</span>
                     </div>
-                    
-                    <div className="bg-white/80 rounded-xl p-4 border border-indigo-100">
-                      <p className="text-lg font-medium text-gray-800 leading-relaxed">
-                        "{currentChapterData.interactiveSection}"
-                      </p>
-                    </div>
+                    {/* Current Page Score */}
+                    {getCurrentPageScore() && (
+                      <div className={`px-3 py-1 rounded-full text-sm font-bold ${getScoreColor(getCurrentPageScore()!).bg} ${getScoreColor(getCurrentPageScore()!).text} ${getScoreColor(getCurrentPageScore()!).border} border`}>
+                        {getCurrentPageScore()}%
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="bg-white/80 rounded-xl p-4 border border-indigo-100">
+                    <p className="text-sm text-gray-600 mb-2 font-medium">Read this complete paragraph aloud:</p>
+                    <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                      {currentChapterData.content}
+                    </p>
+                  </div>
                     
                     {speechSupported ? (
                       <div className="space-y-4">
@@ -350,8 +422,37 @@ export default function StoryReader() {
                         Speech recognition not supported in this browser
                       </p>
                     )}
+                    
+                    {/* Reading Scores Display */}
+                    {allReadingScores.length > 0 && (
+                      <div className="mt-4 space-y-3">
+                        <h4 className="text-sm font-bold text-indigo-700">📚 Your Reading Scores</h4>
+                        <div className="bg-white/90 rounded-xl p-4 max-h-32 overflow-y-auto">
+                          <div className="grid gap-2">
+                            {allReadingScores.slice(-5).reverse().map((scoreEntry, index) => {
+                              const colors = getScoreColor(scoreEntry.score);
+                              return (
+                                <div key={index} className={`flex justify-between items-center p-2 rounded-lg ${colors.bg} ${colors.border} border`}>
+                                  <span className="text-xs text-gray-600">
+                                    {scoreEntry.storyId.replace(/^.*-/, '')} - Page {scoreEntry.pageId.split('-').pop()}
+                                  </span>
+                                  <span className={`text-sm font-bold ${colors.text}`}>
+                                    {scoreEntry.score}%
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div className="mt-3 pt-3 border-t border-gray-200">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-gray-700">Total Reading Score:</span>
+                              <span className="text-lg font-bold text-purple-600">{getTotalReadingScore()}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
               </div>
             </div>
 
