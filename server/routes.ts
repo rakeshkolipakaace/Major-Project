@@ -140,6 +140,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
   }
 
+  // Customize existing story based on user prompt
+  app.post("/api/customize-story", async (req, res) => {
+    try {
+      const { originalStory, customPrompt } = req.body;
+      
+      if (!originalStory || !customPrompt) {
+        return res.status(400).json({ error: 'Original story and custom prompt are required' });
+      }
+
+      // Create a customized version of the story
+      const customizedStory = customizeExistingStory(originalStory, customPrompt);
+
+      res.json(customizedStory);
+    } catch (error) {
+      console.error('Error customizing story:', error);
+      res.status(500).json({ error: 'Failed to customize story' });
+    }
+  });
+
+  function customizeExistingStory(originalStory: any, customPrompt: string) {
+    // Apply custom changes to each chapter
+    const customizedChapters = originalStory.chapters.map((chapter: any, index: number) => {
+      // Blend the original content with the custom prompt
+      const enhancedContent = blendContentWithPrompt(chapter.content, customPrompt, chapter.title);
+      const enhancedInteractive = blendContentWithPrompt(chapter.interactiveSection || '', customPrompt, 'interactive');
+
+      return {
+        ...chapter,
+        content: enhancedContent,
+        interactiveSection: enhancedInteractive,
+        imagePrompt: `${enhancedContent} ${customPrompt}, children's book illustration, cartoon style, colorful, child-friendly`
+      };
+    });
+
+    return {
+      ...originalStory,
+      id: `customized_${originalStory.id}_${Date.now()}`,
+      title: `${originalStory.title} (Your Version)`,
+      description: `${originalStory.description} Enhanced with: ${customPrompt.substring(0, 100)}...`,
+      chapters: customizedChapters,
+      isCustomized: true,
+      customPrompt
+    };
+  }
+
+  function blendContentWithPrompt(originalContent: string, customPrompt: string, type: string): string {
+    // Simple content blending logic
+    const sentences = originalContent.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    
+    if (sentences.length === 0) return originalContent;
+    
+    // Insert custom elements into the content
+    const midPoint = Math.floor(sentences.length / 2);
+    const customElement = getCustomElementFromPrompt(customPrompt, type);
+    
+    const blendedSentences = [
+      ...sentences.slice(0, midPoint),
+      customElement,
+      ...sentences.slice(midPoint)
+    ];
+    
+    return blendedSentences.join('. ') + '.';
+  }
+
+  function getCustomElementFromPrompt(customPrompt: string, type: string): string {
+    const lowerPrompt = customPrompt.toLowerCase();
+    
+    if (type === 'interactive') {
+      if (lowerPrompt.includes('dragon')) {
+        return '"Look! A friendly dragon is here to help us!" they said excitedly';
+      } else if (lowerPrompt.includes('treasure')) {
+        return '"I can see a treasure chest sparkling in the distance!" they whispered';
+      } else if (lowerPrompt.includes('magic')) {
+        return '"This place feels magical! I wonder what amazing things we\'ll discover!" they thought';
+      } else if (lowerPrompt.includes('underwater')) {
+        return '"The underwater world is so beautiful and mysterious!" they marveled';
+      }
+      return `"This is exactly what I imagined when I thought about ${customPrompt.substring(0, 30)}!" they said`;
+    }
+    
+    // For regular content
+    if (lowerPrompt.includes('dragon')) {
+      return 'Suddenly, a gentle dragon with colorful scales appeared, ready to help with the adventure';
+    } else if (lowerPrompt.includes('treasure')) {
+      return 'Hidden among the scenery, a glittering treasure chest caught their attention';
+    } else if (lowerPrompt.includes('magic')) {
+      return 'Magical sparkles filled the air, making everything around them glow with wonder';
+    } else if (lowerPrompt.includes('underwater')) {
+      return 'The scene transformed into a beautiful underwater world with coral reefs and friendly sea creatures';
+    }
+    
+    return `The adventure took an exciting turn as ${customPrompt.substring(0, 50)} became part of their journey`;
+  }
+
   // Generate custom story based on user prompt
   app.post("/api/generate-custom-story", async (req, res) => {
     try {

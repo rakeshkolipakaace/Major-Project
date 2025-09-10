@@ -6,6 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { AnimatedBackground } from "@/components/animated-background";
 import { Navigation } from "@/components/navigation";
 import { AudioControls } from "@/components/audio-controls";
+import { StoryCustomizer } from "@/components/story-customizer";
 import { useGameData } from "@/hooks/use-game-data";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { StoryGenerator } from "@/lib/story-generator";
@@ -92,6 +93,23 @@ export default function StoryReader() {
     }
   }, [result, story, currentChapter, calculatePronunciationScore, addStars]);
 
+  const handleStoryUpdated = (updatedStory: Story) => {
+    setStory(updatedStory);
+    // Reset to first chapter to see the changes
+    setCurrentChapter(0);
+    setPronunciationScore(null);
+    
+    // Update current story in game data
+    setCurrentStory({
+      id: updatedStory.id,
+      title: updatedStory.title,
+      theme: updatedStory.theme,
+      currentChapter: 0,
+      totalChapters: updatedStory.chapters.length,
+      progress: 0
+    });
+  };
+
   const handleNextChapter = () => {
     if (story && currentChapter < story.chapters.length - 1) {
       setCurrentChapter(prev => prev + 1);
@@ -108,7 +126,10 @@ export default function StoryReader() {
         progress: newProgress
       });
     } else {
-      // Story completed
+      // Story completed - add to reading score
+      const currentScore = parseInt(localStorage.getItem('readingScore') || '0');
+      localStorage.setItem('readingScore', (currentScore + 50).toString());
+      
       addStars(50); // Completion bonus
       setCurrentStory(null);
       setLocation("/");
@@ -144,15 +165,26 @@ export default function StoryReader() {
               <span className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
                 Chapter {currentChapter + 1}
               </span>
+              {story.isCustomized && (
+                <span className="text-xs text-purple-500 bg-purple-100 px-2 py-1 rounded">
+                  ✨ Customized
+                </span>
+              )}
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleClose}
-              data-testid="button-close"
-            >
-              <X className="w-5 h-5" />
-            </Button>
+            <div className="flex items-center space-x-2">
+              <StoryCustomizer 
+                currentStory={story}
+                onStoryUpdated={handleStoryUpdated}
+              />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleClose}
+                data-testid="button-close"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
 
           {/* Audio Controls */}
