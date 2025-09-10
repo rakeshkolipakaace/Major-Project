@@ -6,7 +6,6 @@ import { AnimatedBackground } from "@/components/animated-background";
 import { Navigation } from "@/components/navigation";
 import { StoryCard } from "@/components/story-card";
 import { AchievementBadge } from "@/components/achievement-badge";
-import { CustomStoryCreator } from "@/components/custom-story-creator";
 import { useGameData } from "@/hooks/use-game-data";
 import { StoryThemeConfig } from "@/types/game";
 
@@ -56,12 +55,14 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const { gameData, updateStreak } = useGameData();
 
-  const handleCustomStoryCreated = (customStory: any) => {
-    // Store the custom story in localStorage for access
-    localStorage.setItem('currentCustomStory', JSON.stringify(customStory));
-    // Navigate to the custom story reader
-    setLocation(`/story/custom/${customStory.id}`);
+  // Get reading score from localStorage
+  const getReadingScore = () => {
+    const savedScore = localStorage.getItem('readingScore');
+    return savedScore ? parseInt(savedScore) : 0;
   };
+
+  const readingScore = getReadingScore();
+
 
   const handleThemeSelect = (themeId: string) => {
     updateStreak();
@@ -111,16 +112,25 @@ export default function Home() {
                 Space Adventure Story
               </Button>
             </div>
-            
-            {/* Custom Story Creator */}
-            <div className="flex justify-center pt-4">
-              <CustomStoryCreator onStoryCreated={handleCustomStoryCreated} />
-            </div>
           </div>
           
-          {/* Daily Progress */}
+          {/* Reading Score & Daily Progress */}
           <div className="bg-card/30 backdrop-blur-md rounded-2xl p-6 max-w-md mx-auto border border-border">
-            <h3 className="text-lg font-gaming text-secondary mb-4">Today's Progress</h3>
+            <h3 className="text-lg font-gaming text-secondary mb-4">Your Reading Journey</h3>
+            
+            {/* Reading Score Display */}
+            <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-4 mb-4 border border-purple-200">
+              <div className="text-center">
+                <div className="text-3xl font-gaming text-purple-600 mb-1">
+                  {readingScore}
+                </div>
+                <div className="text-sm text-purple-600 font-medium">Reading Score</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  Complete stories and improve pronunciation to increase your score!
+                </div>
+              </div>
+            </div>
+            
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-2">
