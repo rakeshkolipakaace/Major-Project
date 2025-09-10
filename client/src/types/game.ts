@@ -42,6 +42,8 @@ export interface Story {
   chapters: Chapter[];
   difficulty: 'easy' | 'medium' | 'hard';
   estimatedTime: number;
+  isCustomStory?: boolean;
+  customPrompt?: string;
 }
 
 export interface Chapter {
@@ -50,12 +52,15 @@ export interface Chapter {
   content: string;
   interactiveSection?: string;
   audioUrl?: string;
+  imageUrl?: string;
+  imagePrompt?: string;
+  isCustomGenerated?: boolean;
 }
 
-export type StoryTheme = 'space' | 'magic' | 'animals';
+export type StoryTheme = 'space' | 'magic' | 'animals' | 'custom';
 
 export interface StoryThemeConfig {
-  id: StoryTheme;
+  id: Exclude<StoryTheme, 'custom'>;
   name: string;
   description: string;
   color: string;
@@ -63,4 +68,14 @@ export interface StoryThemeConfig {
   storiesCount: number;
   imageUrl: string;
   achievements: Achievement[];
+}
+
+export interface CustomStory extends Story {
+  isCustomStory: true;
+  customPrompt: string;
+  chapters: (Chapter & {
+    imageUrl?: string;
+    imagePrompt?: string;
+    isCustomGenerated?: boolean;
+  })[];
 }

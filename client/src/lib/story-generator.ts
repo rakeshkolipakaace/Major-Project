@@ -48,7 +48,7 @@ const storyTemplates = {
 };
 
 export class StoryGenerator {
-  static generateStory(theme: StoryTheme, storyIndex: number = 0): Story {
+  static generateStory(theme: Exclude<StoryTheme, 'custom'>, storyIndex: number = 0): Story {
     const templates = storyTemplates[theme];
     const template = templates[storyIndex % templates.length];
     
@@ -70,14 +70,14 @@ export class StoryGenerator {
     return story;
   }
 
-  static getStoriesByTheme(theme: StoryTheme): Story[] {
+  static getStoriesByTheme(theme: Exclude<StoryTheme, 'custom'>): Story[] {
     const templates = storyTemplates[theme];
     return templates.map((_, index) => this.generateStory(theme, index));
   }
 
   static getAllStories(): Story[] {
     const allStories: Story[] = [];
-    (['space', 'magic', 'animals'] as StoryTheme[]).forEach(theme => {
+    (['space', 'magic', 'animals'] as const).forEach(theme => {
       allStories.push(...this.getStoriesByTheme(theme));
     });
     return allStories;

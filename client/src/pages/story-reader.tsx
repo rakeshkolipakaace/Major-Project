@@ -33,18 +33,37 @@ export default function StoryReader() {
 
   useEffect(() => {
     if (theme && storyId) {
-      const generatedStory = StoryGenerator.generateStory(theme, parseInt(storyId));
-      setStory(generatedStory);
-      
-      // Update current story in game data
-      setCurrentStory({
-        id: generatedStory.id,
-        title: generatedStory.title,
-        theme: generatedStory.theme,
-        currentChapter: 0,
-        totalChapters: generatedStory.chapters.length,
-        progress: 0
-      });
+      if (theme === 'custom') {
+        // Load custom story from localStorage
+        const customStoryData = localStorage.getItem('currentCustomStory');
+        if (customStoryData) {
+          const customStory = JSON.parse(customStoryData);
+          setStory(customStory);
+          
+          // Update current story in game data
+          setCurrentStory({
+            id: customStory.id,
+            title: customStory.title,
+            theme: customStory.theme,
+            currentChapter: 0,
+            totalChapters: customStory.chapters.length,
+            progress: 0
+          });
+        }
+      } else {
+        const generatedStory = StoryGenerator.generateStory(theme, parseInt(storyId));
+        setStory(generatedStory);
+        
+        // Update current story in game data
+        setCurrentStory({
+          id: generatedStory.id,
+          title: generatedStory.title,
+          theme: generatedStory.theme,
+          currentChapter: 0,
+          totalChapters: generatedStory.chapters.length,
+          progress: 0
+        });
+      }
     }
   }, [theme, storyId, setCurrentStory]);
 
@@ -142,8 +161,31 @@ export default function StoryReader() {
             className="mb-6"
           />
 
+          {/* Story Image */}
+          {currentChapterData.imageUrl && (
+            <div className="mb-6">
+              <img 
+                src={currentChapterData.imageUrl}
+                alt={`Illustration for ${currentChapterData.title}`}
+                className="w-full h-64 object-cover rounded-xl"
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600';
+                }}
+              />
+              {story.isCustomStory && currentChapterData.isCustomGenerated && (
+                <div className="mt-2 flex items-center justify-center">
+                  <span className="text-xs text-purple-500 bg-purple-100 px-2 py-1 rounded">
+                    ✨ AI Generated Image
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Story Content */}
           <div className="bg-background/50 rounded-xl p-6 space-y-4 max-h-96 overflow-y-auto mb-6">
+            <h4 className="text-xl font-gaming text-primary mb-3">{currentChapterData.title}</h4>
             <p className="text-lg leading-relaxed">
               {currentChapterData.content}
             </p>
