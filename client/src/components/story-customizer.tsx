@@ -126,10 +126,9 @@ export function StoryCustomizer({ currentStory, onStoryUpdated }: StoryCustomize
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          variant="outline"
-          className="px-4 py-2 border-purple-300 text-purple-600 hover:bg-purple-50"
+          className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
         >
-          <Edit className="mr-2 h-4 w-4" />
+          <Edit className="mr-2 h-5 w-5" />
           Add StoryLine
         </Button>
       </DialogTrigger>
