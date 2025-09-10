@@ -96,23 +96,30 @@ export default function ComedyReader() {
   };
 
   const generateImageForPage = async (page: StoryPage) => {
+    console.log('Generating image for page:', page.id, 'with prompt:', page.imagePrompt);
+    
     if (imageCache.current.has(page.id)) {
+      console.log('Using cached image for page:', page.id);
       setCurrentImage(imageCache.current.get(page.id)!);
       return;
     }
 
     setIsLoadingImage(true);
     try {
+      console.log('Requesting new image generation...');
       const imageUrl = await ImageGenerator.generateImage({
         prompt: page.imagePrompt,
         style: 'cartoon'
       });
+      console.log('Image generated successfully for page:', page.id);
       imageCache.current.set(page.id, imageUrl);
       setCurrentImage(imageUrl);
     } catch (error) {
-      console.error('Image generation failed:', error);
+      console.error('Image generation failed for page:', page.id, error);
       // Use placeholder image
-      setCurrentImage(ImageGenerator.getPlaceholderImage(page.imagePrompt));
+      const placeholderUrl = ImageGenerator.getPlaceholderImage(page.imagePrompt);
+      console.log('Using placeholder image:', placeholderUrl);
+      setCurrentImage(placeholderUrl);
     } finally {
       setIsLoadingImage(false);
     }
@@ -148,9 +155,16 @@ export default function ComedyReader() {
     if (!story) return;
     
     if (currentPageIndex < story.pages.length - 1) {
-      setCurrentPageIndex(prev => prev + 1);
+      const nextIndex = currentPageIndex + 1;
+      console.log('Moving to next page:', nextIndex, 'of', story.pages.length);
+      setCurrentPageIndex(nextIndex);
       setPronunciationScore(null);
       stop(); // Stop current narration
+      
+      // Force image generation for next page
+      setTimeout(() => {
+        generateImageForPage(story.pages[nextIndex]);
+      }, 100);
     } else {
       // Story completed
       const completionBonus = 100;
@@ -163,9 +177,16 @@ export default function ComedyReader() {
 
   const handlePrevPage = () => {
     if (currentPageIndex > 0) {
-      setCurrentPageIndex(prev => prev - 1);
+      const prevIndex = currentPageIndex - 1;
+      console.log('Moving to previous page:', prevIndex);
+      setCurrentPageIndex(prevIndex);
       setPronunciationScore(null);
       stop(); // Stop current narration
+      
+      // Force image generation for previous page  
+      setTimeout(() => {
+        generateImageForPage(story.pages[prevIndex]);
+      }, 100);
     }
   };
 
