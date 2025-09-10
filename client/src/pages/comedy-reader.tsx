@@ -163,7 +163,9 @@ export default function ComedyReader() {
       
       // Force image generation for next page
       setTimeout(() => {
-        generateImageForPage(story.pages[nextIndex]);
+        if (story) {
+          generateImageForPage(story.pages[nextIndex]);
+        }
       }, 100);
     } else {
       // Story completed
@@ -185,7 +187,9 @@ export default function ComedyReader() {
       
       // Force image generation for previous page  
       setTimeout(() => {
-        generateImageForPage(story.pages[prevIndex]);
+        if (story) {
+          generateImageForPage(story.pages[prevIndex]);
+        }
       }, 100);
     }
   };
